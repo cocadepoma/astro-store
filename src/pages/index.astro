@@ -1,4 +1,5 @@
 ---
+import { ProductList } from '@/components/products';
 import MainLayout from '@/layouts/MainLayout.astro';
 import { actions } from 'astro:actions';
 
@@ -8,9 +9,11 @@ if (error) {
   return Astro.redirect('/');
 }
 
-console.log(data);
+const { products, totalPages } = data;
 ---
 
 <MainLayout>
-  <h1 class="text-3xl">Home Page</h1>
+  <h1 class="text-3xl">Product List</h1>
+
+  <ProductList products={data.products} client:load/>
 </MainLayout>
