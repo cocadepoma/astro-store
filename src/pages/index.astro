@@ -1,5 +1,14 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
+import { actions } from 'astro:actions';
+
+const {data, error} = await actions.getProductsByPage({});
+
+if (error) {
+  return Astro.redirect('/');
+}
+
+console.log(data);
 ---
 
 <MainLayout>
