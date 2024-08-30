@@ -23,5 +23,5 @@ export const ProductCard = ({product}: Props) => {
       <h4>{product.title}</h4>
       <p>{product.price}</p>
     </a>
-  )
-}
+  );
+};
