@@ -5,9 +5,11 @@ import '@/assets/styles/global.css';
 
 interface Props {
   title?: string;
+  description?: string;
+  image?: string;
 }
 
-const { title = 'Astro Store' } = Astro.props;
+const { title = 'Astro Store', description, image } = Astro.props;
 ---
 
 <html lang="es">
@@ -17,11 +19,16 @@ const { title = 'Astro Store' } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
   </head>
   <body>
     <Navbar />
 
-    <main class="container m-auto max-w-3xl px-5 pt-[6.5rem]">
+    <main class="container m-auto max-w-4xl px-5 pt-[6.5rem]">
       <slot />
     </main>
   </body>

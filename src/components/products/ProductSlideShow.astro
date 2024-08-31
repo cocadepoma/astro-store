@@ -1,0 +1,58 @@
+---
+import 'swiper/css';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
+interface Props {
+  images: string[];
+}
+
+const { images } = Astro.props;
+
+const fullImages = images.map((image) => {
+  return image.startsWith('http') ? image : `${import.meta.env.PUBLIC_URL}/images/products/${image}`;
+});
+---
+
+<div class="swiper mt-10 col-span-1 sm:col-span-2">
+  <div class="swiper-wrapper">
+    {
+      fullImages.map((image) => (
+        <div class="swiper-slide">
+          <img src={image} alt="Product image" class="object-cover" />
+        </div>
+      ))
+    }
+  </div>
+  <!-- If we need pagination -->
+  <div class="swiper-pagination"></div>
+</div>
+
+<script>
+  import Swiper from 'swiper';
+  import {Pagination} from 'swiper/modules';
+
+  new Swiper('.swiper', {
+    pagination: {
+      el: '.swiper-pagination',
+    },
+    modules: [Pagination],
+  });
+</script>
+
+<style>
+  .swiper {
+    width: 99%;
+    height: 500px;
+  }
+  .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    /* Center slide text vertically */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+</style>
