@@ -1,5 +1,6 @@
-import { defineAction, z } from "astro:actions";
+import { defineAction } from "astro:actions";
 import { db, eq, Product, ProductImage } from "astro:db";
+import { z } from "astro:schema";
 
 export const getProductBySlug = defineAction({
   accept: "json",

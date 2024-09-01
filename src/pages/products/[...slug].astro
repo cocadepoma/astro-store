@@ -47,7 +47,7 @@ const images = data!.images;
         <button class="btn-quantity">+</button>
       </div>
 
-      <button class="mt-5 bg-blue-500 text-white p-3 w-full"
+      <button class="mt-5 bg-blue-500 text-white p-3 w-full disabled:bg-gray-500"
         >Añadir al carrito</button
       >
 
@@ -60,59 +60,75 @@ const images = data!.images;
 </MainLayout>
 
 <script>
+  import { CartCookiesClient } from '@/utils';
   import Swal from 'sweetalert2';
-  const sizeElements = document.querySelectorAll('li[data-size]');
+  import { itemsInCart } from '@/store';
+  import { navigate } from 'astro:transitions/client';
 
-  sizeElements.forEach((sizeElement) => {
-    sizeElement.addEventListener('click', () => {
-      sizeElements.forEach((el) => el.classList.remove('selected-size'));
-      sizeElement.classList.add('selected-size');
-    });
-  });
+  document.addEventListener('astro:page-load', () => {
+    const sizeElements = document.querySelectorAll('li[data-size]');
 
-  const quantityInput = document.querySelector('input[type="number"]') as HTMLInputElement;
-  const productIdInput = document.querySelector('#product-id') as HTMLInputElement;
-
-  let quantity = 1;
-
-  const [
-    decreaseQuantityButton,
-    increaseQuantityButton,
-    addToCartButton,
-  ] = document.querySelectorAll('button');
-
-  increaseQuantityButton.addEventListener('click', () => {
-    quantity = Math.min(quantity + 1, 5);
-    quantityInput.value = quantity.toString();
-  });
-
-  decreaseQuantityButton.addEventListener('click', () => {
-    quantity = Math.max(quantity - 1, 1);
-    quantityInput.value = quantity.toString();
-  });
-
-  addToCartButton.addEventListener('click', () => {
-    const size = document.querySelector('.selected-size')?.textContent;
-
-    if (!size) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'You must select a size',
-      });
+    if (!sizeElements.length) {
       return;
     }
 
-    addToCartButton.disabled = true;
+    sizeElements.forEach((sizeElement) => {
+      sizeElement.addEventListener('click', () => {
+        sizeElements.forEach((el) => el.classList.remove('selected-size'));
+        sizeElement.classList.add('selected-size');
+      });
+    });
 
-    const product = {
-      id: productIdInput.value,
-      size,
-      quantity,
-    };
+    const quantityInput = document.querySelector('input[type="number"]') as HTMLInputElement;
+    const productIdInput = document.querySelector('#product-id') as HTMLInputElement;
 
-    console.log(product);
-  });
+    let quantity = 1;
+
+    const [
+      decreaseQuantityButton,
+      increaseQuantityButton,
+      addToCartButton,
+    ] = document.querySelectorAll('button');
+
+    if(!decreaseQuantityButton || !increaseQuantityButton || !addToCartButton) {
+      return;
+    }
+
+    increaseQuantityButton.addEventListener('click', () => {
+      quantity = Math.min(quantity + 1, 5);
+      quantityInput.value = quantity.toString();
+    });
+
+    decreaseQuantityButton.addEventListener('click', () => {
+      quantity = Math.max(quantity - 1, 1);
+      quantityInput.value = quantity.toString();
+    });
+
+    addToCartButton.addEventListener('click', async () => {
+      const size = document.querySelector('.selected-size')?.textContent;
+
+      if (!size) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'You must select a size',
+        });
+        return;
+      }
+
+      addToCartButton.disabled = true;
+
+      const cart = CartCookiesClient.addItem({
+        productId: productIdInput.value,
+        size,
+        quantity,
+      });
+
+      itemsInCart.set(cart.length);
+
+      await navigate('/cart');
+    });
+  })
 </script>
 
 

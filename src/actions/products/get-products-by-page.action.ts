@@ -1,6 +1,7 @@
 import type { ProductWithImages } from "@/interfaces";
-import { defineAction, z } from "astro:actions";
+import { defineAction } from "astro:actions";
 import { count, db, Product, ProductImage, sql } from "astro:db";
+import { z } from "astro:schema";
 
 export const getProductsByPage = defineAction({
   accept: "json",

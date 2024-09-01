@@ -5,7 +5,7 @@ interface Props {
   product: ProductWithImages;
 }
 
-export const ProductCard = ({product}: Props) => {
+export const ProductCard = ({ product }: Props) => {
   const images = product.images.split(",").map((img) => {
     return img.startsWith("http") ? img : `${import.meta.env.PUBLIC_URL}/images/products/${img}`;
   });
@@ -16,7 +16,7 @@ export const ProductCard = ({product}: Props) => {
     <a
       onMouseEnter={() => setCurrentImage(images[1] ?? images[0])}
       onMouseLeave={() => setCurrentImage(images[0])}
-      href={`/products/${product.slug}`} 
+      href={`/products/${product.slug}`}
       className="group"
     >
       <img src={currentImage} alt={product.title} className="h-[350px] object-contain" />

@@ -33,11 +33,13 @@ const fullImages = images.map((image) => {
   import Swiper from 'swiper';
   import {Pagination} from 'swiper/modules';
 
-  new Swiper('.swiper', {
-    pagination: {
-      el: '.swiper-pagination',
-    },
-    modules: [Pagination],
+  document.addEventListener('astro:page-load', () => {
+    new Swiper('.swiper', {
+      pagination: {
+        el: '.swiper-pagination',
+      },
+      modules: [Pagination],
+    });
   });
 </script>
 
