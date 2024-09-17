@@ -12,7 +12,7 @@ export default async function seed() {
 	];
 
 	const jhonDoe = {
-		id: uuid(),
+		id: 'abc-1234-jhon-doe',
 		name: 'John Doe',
 		email: 'jhon.doe@google.com',
 		password: bcrypt.hashSync('123456', 10),
@@ -20,7 +20,7 @@ export default async function seed() {
 	};
 
 	const janeDoe = {
-		id: uuid(),
+		id: 'abc-1234-jane-doe',
 		name: 'Jane Doe',
 		email: 'jane.doe@google.com',
 		password: bcrypt.hashSync('123456', 10),
