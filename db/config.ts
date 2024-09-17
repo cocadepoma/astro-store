@@ -7,8 +7,8 @@ const User = defineTable({
     email: column.text({ unique: true }),
     password: column.text(),
     createdAt: column.date({ default: new Date() }),
-    role: column.text({ references: () => Role.columns.id }) // admin, user, super-user
-  }
+    role: column.text({ references: () => Role.columns.id }), // admin, user, super-user
+  },
 });
 
 const Role = defineTable({
@@ -18,6 +18,7 @@ const Role = defineTable({
   },
 });
 
+// Productos
 const Product = defineTable({
   columns: {
     id: column.text({ primaryKey: true }),
@@ -35,7 +36,6 @@ const Product = defineTable({
   },
 });
 
-
 const ProductImage = defineTable({
   columns: {
     id: column.text({ primaryKey: true }),
@@ -51,5 +51,5 @@ export default defineDb({
     Role,
     Product,
     ProductImage,
-  }
+  },
 });

@@ -1,13 +1,15 @@
 ---
-import ProductImage from '@/components/products/ProductImage.astro';
-import Pagination from '@/components/shared/Pagination.astro';
 import MainLayout from '@/layouts/MainLayout.astro';
+
 import { actions } from 'astro:actions';
+import Pagination from '@/components/shared/Pagination.astro';
+import { Formatter } from '@/utils';
+import ProductImage from '@/components/products/ProductImage.astro';
 
 const searchParams = Astro.url.searchParams;
-const pageParam = Number(searchParams.get('page')) ?? 1;
+const pageParam = Number(searchParams.get('page') ?? 1);
 
-const {data, error} = await actions.getProductsByPage({
+const { data, error } = await actions.getProductsByPage.safe({
   page: pageParam,
 });
 
@@ -16,40 +18,54 @@ if (error) {
 }
 
 const { products, totalPages } = data;
-
 ---
 
-<MainLayout title="Admin Dashboard">
-  <h1>Admin Dashboard</h1>
+<MainLayout title="Panel administrativo">
+  <h1>Dashboard</h1>
+  <p>Listado de productos</p>
 
-  <p>Product list</p>
-  <table class="w-full mt-2">
+  <div class="flex justify-end">
+    <a
+      href="/admin/products/new"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all"
+    >
+      Nuevo Producto
+    </a>
+  </div>
+
+  <table class="w-full mt-5">
     <thead>
       <tr>
-        <th class="border px-4 py-2">Image</th>
-        <th class="border px-4 py-2">Title</th>
-        <th class="border px-4 py-2">Price</th>
-        <th class="border px-4 py-2">Stock</th>
+        <th class="text-left">Imagen</th>
+        <th class="text-left">Título</th>
+        <th class="text-left">Precio</th>
+        <th class="text-left">Inventario</th>
       </tr>
     </thead>
+
     <tbody>
       {
         products.map((product) => (
           <tr>
-            <td class="border px-4 py-2">
-              <ProductImage src={product.images.split(',')[0] ?? ''} alt={product.title} className="w-16 h-16" />
+            <td>
+              {/* TODO: Esto dará un error si no hay imágenes */}
+              <ProductImage
+                src={product.images.split(',')[0]}
+                alt={product.title}
+                className="w-16 h-16"
+              />
             </td>
-            <td class="border px-4 py-2">
+            <td>
               <a
-                data-astro-prefetch="load"
-                class="hover:underline cursor-pointer" 
+                class="hover:underline cursor-pointer"
                 href={`/admin/products/${product.slug}`}
               >
+                {/* data-astro-prefetch="load" */}
                 {product.title}
               </a>
             </td>
-            <td class="border px-4 py-2">{product.price}</td>
-            <td class="border px-4 py-2">{product.stock}</td>
+            <td>{Formatter.currency(product.price)}</td>
+            <td>{product.stock}</td>
           </tr>
         ))
       }
@@ -58,4 +74,3 @@ const { products, totalPages } = data;
 
   <Pagination totalPages={totalPages} />
 </MainLayout>
-

@@ -1,64 +1,63 @@
-import { db, Role, User, Product, ProductImage } from 'astro:db';
-import { v4 as uuid } from 'uuid';
+import { Role, User, db, Product, ProductImage } from 'astro:db';
+import { v4 as UUID } from 'uuid';
 import bcrypt from 'bcryptjs';
 import { seedProducts } from './seed-data';
 
-
 // https://astro.build/db/seed
 export default async function seed() {
-	const roles = [
-		{ id: 'admin', name: 'Administrator' },
-		{ id: 'user', name: 'Customer' },
-	];
+  const roles = [
+    { id: 'admin', name: 'Administrator' },
+    { id: 'user', name: 'System user' },
+  ];
 
-	const jhonDoe = {
-		id: 'abc-1234-jhon-doe',
-		name: 'John Doe',
-		email: 'jhon.doe@google.com',
-		password: bcrypt.hashSync('123456', 10),
-		role: 'admin',
-	};
+  const johnDoe = {
+    id: 'ABC-123-JOHN', //  UUID(),
+    name: 'John Doe',
+    email: 'john.doe@google.com',
+    password: bcrypt.hashSync('123456'),
+    role: 'admin',
+  };
 
-	const janeDoe = {
-		id: 'abc-1234-jane-doe',
-		name: 'Jane Doe',
-		email: 'jane.doe@google.com',
-		password: bcrypt.hashSync('123456', 10),
-		role: 'user',
-	};
+  const janeDoe = {
+    id: 'ABC-123-JANE', //  UUID(),
+    name: 'Jane Doe',
+    email: 'jane.doe@google.com',
+    password: bcrypt.hashSync('123456'),
+    role: 'user',
+  };
 
-	await db.insert(Role).values(roles);
-	await db.insert(User).values([jhonDoe, janeDoe]);
+  await db.insert(Role).values(roles);
+  await db.insert(User).values([johnDoe, janeDoe]);
 
-	const queries: any = [];
+  const queries: any = [];
 
-	seedProducts.forEach((p) => {
-		const product = {
-			id: uuid(),
-			description: p.description,
-			gender: p.gender,
-			price: p.price,
-			sizes: p.sizes.join(','),
-			slug: p.slug,
-			stock: p.stock,
-			tags: p.tags.join(','),
-			title: p.title,
-			type: p.type,
-			user: jhonDoe.id,
-		};
+  seedProducts.forEach((p) => {
+    const product = {
+      id: UUID(),
+      description: p.description,
+      gender: p.gender,
+      price: p.price,
+      sizes: p.sizes.join(','),
+      slug: p.slug,
+      stock: p.stock,
+      tags: p.tags.join(','),
+      title: p.title,
+      type: p.type,
+      user: johnDoe.id,
+    };
 
-		queries.push(db.insert(Product).values(product));
+    queries.push(db.insert(Product).values(product));
 
-		p.images.forEach((image) => {
-			const productImage = {
-				id: uuid(),
-				productId: product.id,
-				image,
-			};
+    p.images.forEach((img) => {
+      const image = {
+        id: UUID(),
+        image: img,
+        productId: product.id,
+      };
 
-			queries.push(db.insert(ProductImage).values(productImage));
-		});
-	});
+      queries.push(db.insert(ProductImage).values(image));
+    });
+  });
 
-	await db.batch(queries);
+  await db.batch(queries);
 }
